@@ -5,8 +5,8 @@ import { Search } from "react-feather";
 
 import ChatBanner from "@/components/ChatBanner";
 import AddChat from "../AddChat";
-import { UserContext } from "../UserProvider";
 import { Contact } from "@/types";
+import useUser from "@/hooks/use-user";
 
 function ChatList({
   setSelectedChat,
@@ -14,25 +14,31 @@ function ChatList({
   setSelectedChat: React.Dispatch<React.SetStateAction<Contact>>;
 }) {
   const [contacts, setContacts] = React.useState([]);
-  const context = React.useContext(UserContext);
-  const userEmail = context?.userEmail;
+  const { authToken } = useUser();
 
   function handleSelection(contact: Contact) {
     setSelectedChat(contact);
   }
 
   React.useEffect(() => {
-    if (!userEmail) return;
+    if (!authToken) return;
 
-    async function fetchContacts(email: string) {
+    async function fetchContacts() {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT}/user/contacts/${email}`
+        `${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT}/user/contacts`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${authToken}`,
+          },
+        }
       );
       const contacts = await response.json();
       setContacts(contacts);
     }
-    fetchContacts(userEmail);
-  }, [userEmail]);
+    fetchContacts();
+  }, [authToken]);
 
   return (
     <Container>

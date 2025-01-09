@@ -4,23 +4,23 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Plus, X } from "react-feather";
 import styled from "styled-components";
 
-import { UserContext } from "../UserProvider";
 import VisuallyHidden from "../VisuallyHidden";
+import useUser from "@/hooks/use-user";
 
 function AddChat() {
   const [open, setOpen] = React.useState(false);
   const [email, setEmail] = React.useState("");
-  const context = React.useContext(UserContext);
-  const userEmail = context?.userEmail;
+  const { authToken } = useUser();
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT}/user/contacts/${userEmail}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT}/user/contacts`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${authToken}`,
         },
         body: JSON.stringify({ contactEmail: email }),
       }

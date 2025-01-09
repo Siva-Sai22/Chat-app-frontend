@@ -1,10 +1,22 @@
 "use client";
 import * as React from "react";
 import styled from "styled-components";
+import { Send } from "react-feather";
 
 import { Contact } from "@/types";
 
 function Chat({ selectedChat }: { selectedChat: Contact }) {
+  const [messageContent, setMessageContent] = React.useState("");
+
+  function sendMessage(event: React.FormEvent) {
+    event.preventDefault();
+    if (messageContent === "") {
+      return;
+    }
+    console.log(`Sending message: ${messageContent}`);
+    setMessageContent("");
+  }
+
   if (selectedChat.email === "") {
     return (
       <NoMessageWrapper>Select a chat to start messaging</NoMessageWrapper>
@@ -14,7 +26,19 @@ function Chat({ selectedChat }: { selectedChat: Contact }) {
     <Wrapper>
       <TopBar>{selectedChat.name}</TopBar>
       <MessageArea />
-      <MessageBox placeholder="Write a message..." />
+      <form onSubmit={sendMessage}>
+        <MessageBox>
+          <Input
+            type="text"
+            placeholder="Write a message..."
+            value={messageContent}
+            onChange={(event) => setMessageContent(event.target.value)}
+          />
+          <Button type="submit">
+            <Send size={20} />
+          </Button>
+        </MessageBox>
+      </form>
     </Wrapper>
   );
 }
@@ -46,16 +70,32 @@ const MessageArea = styled.div`
   flex: 1;
 `;
 
-const MessageBox = styled.input`
+const MessageBox = styled.div`
   height: 45px;
-  padding: 8px 16px;
-  border: none;
   border-top: 1px solid hsl(0 0 80%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 16px;
+`;
+
+const Input = styled.input`
+  height: 43px;
+  border: none;
   font-size: 1.1rem;
+  padding: 8px 16px;
+  margin-right: 12px;
+  flex: 1;
 
   &:focus {
     outline: hsl(0 0 40%) solid 1px;
   }
 `;
+
+const Button = styled.button`
+  background-color: white;
+  border: none;
+  cursor: pointer;
+`
 
 export default Chat;

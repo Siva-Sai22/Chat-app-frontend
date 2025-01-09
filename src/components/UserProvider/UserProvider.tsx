@@ -25,9 +25,10 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     const user = localStorage.getItem("user");
     if (user) {
-      const { email, username } = JSON.parse(user);
+      const { email, username, authToken } = JSON.parse(user);
       setUserEmail(email);
       setUsername(username);
+      setAuthToken(authToken);
     }
   }, []);
 
@@ -35,7 +36,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     setUserEmail(email);
     setUsername(username);
     setAuthToken(authToken);
-    localStorage.setItem("user", JSON.stringify({ email, username }));
+    localStorage.setItem("user", JSON.stringify({ email, username, authToken }));
   }
 
   function logoutUser() {
