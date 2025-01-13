@@ -7,7 +7,7 @@ import styled from "styled-components";
 import VisuallyHidden from "../VisuallyHidden";
 import useUser from "@/hooks/use-user";
 
-function AddChat() {
+function AddChat({ fetchContacts }: { fetchContacts: () => Promise<void> }) {
   const [open, setOpen] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const { authToken } = useUser();
@@ -30,6 +30,7 @@ function AddChat() {
       return;
     }
 
+    await fetchContacts();
     setEmail("");
     setOpen(false);
   }

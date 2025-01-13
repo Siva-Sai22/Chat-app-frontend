@@ -17,7 +17,7 @@ function MessageArea({
   setMessages: React.Dispatch<React.SetStateAction<MessageType[]>>;
 }) {
   const [page, setPage] = React.useState(0);
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [hasMore, setHasMore] = React.useState(true);
 
   const messageAreaRef = React.useRef<HTMLDivElement>(null);
@@ -70,6 +70,7 @@ function MessageArea({
       setMessages(messages);
       setPage(1);
       setHasMore(messages.length > 0);
+      setLoading(false);
     }
 
     loadInitialMessages();
@@ -92,10 +93,10 @@ function MessageArea({
 
   return (
     <Wrapper ref={messageAreaRef} onScroll={handleScroll}>
-      {loading && <Loading loading={loading} />}
       {messages.map((message) => (
         <Message key={crypto.randomUUID()} message={message} />
       ))}
+      {loading && <Loader><LoadingSpinner loading={loading} /></Loader>}
     </Wrapper>
   );
 }
@@ -108,8 +109,10 @@ const Wrapper = styled.div`
   flex-direction: column-reverse;
 `;
 
-const Loading = styled(LoadingSpinner)`
-  height: 50px;
+const Loader = styled.div`
+  margin-top: 16px;
+  margin-bottom: 8px;
+  align-self: center;
 `;
 
 export default MessageArea;

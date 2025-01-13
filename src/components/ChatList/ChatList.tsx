@@ -13,33 +13,34 @@ function ChatList({
 }: {
   setSelectedChat: React.Dispatch<React.SetStateAction<Contact>>;
 }) {
-  const [contacts, setContacts] = React.useState([]);
+  const [contacts, setContacts] = React.useState<Contact[]>([]);
   const { authToken } = useUser();
 
   function handleSelection(contact: Contact) {
     setSelectedChat(contact);
   }
 
+  const fetchContacts = React.useCallback(async () => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT}/user/contacts`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+    const contacts = await response.json();
+    console.log(contacts);
+    setContacts(contacts);
+  }, [authToken]);
+
   React.useEffect(() => {
     if (!authToken) return;
 
-    async function fetchContacts() {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_ENDPOINT}/user/contacts`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      const contacts = await response.json();
-      console.log(contacts);
-      setContacts(contacts);
-    }
     fetchContacts();
-  }, [authToken]);
+  }, [authToken, fetchContacts]);
 
   return (
     <Container>
@@ -57,7 +58,7 @@ function ChatList({
           onClick={() => handleSelection(contact)}
         />
       ))}
-      <AddChat />
+      <AddChat fetchContacts={fetchContacts} />
     </Container>
   );
 }
