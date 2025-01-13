@@ -4,17 +4,61 @@ import styled from "styled-components";
 import { Send } from "react-feather";
 
 import { Contact } from "@/types";
+import useUser from "@/hooks/use-user";
+import MessageArea from "../MessageArea";
+import { Message as MessageType } from "@/types";
 
 function Chat({ selectedChat }: { selectedChat: Contact }) {
+  const [messages, setMessages] = React.useState<MessageType[]>([]);
   const [messageContent, setMessageContent] = React.useState("");
+  const [socket, setSocket] = React.useState<WebSocket | null>(null);
+  const { authToken, userEmail } = useUser();
+
+  React.useEffect(() => {
+    if (authToken === "") {
+      return;
+    }
+
+    const newSocket = new WebSocket(`ws://localhost:8080?token=${authToken}`);
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.close();
+    };
+  }, [authToken]);
+
+  React.useEffect(() => {
+    if (!socket) {
+      return;
+    }
+
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      setMessages((prev) => [message, ...prev]);
+    };
+  });
 
   function sendMessage(event: React.FormEvent) {
     event.preventDefault();
     if (messageContent === "") {
       return;
     }
-    console.log(`Sending message: ${messageContent}`);
+    const message = {
+      to: selectedChat.email,
+      content: messageContent,
+      timestamp: new Date().toISOString(),
+    };
+    socket?.send(JSON.stringify(message));
+
     setMessageContent("");
+    setMessages((prev) => [
+      {
+        message: message.content,
+        sender: userEmail,
+        timestamp: new Date(message.timestamp),
+      },
+      ...prev,
+    ]);
   }
 
   if (selectedChat.email === "") {
@@ -22,10 +66,15 @@ function Chat({ selectedChat }: { selectedChat: Contact }) {
       <NoMessageWrapper>Select a chat to start messaging</NoMessageWrapper>
     );
   }
+
   return (
     <Wrapper>
       <TopBar>{selectedChat.name}</TopBar>
-      <MessageArea />
+      <MessageArea
+        selectedChat={selectedChat}
+        messages={messages}
+        setMessages={setMessages}
+      />
       <form onSubmit={sendMessage}>
         <MessageBox>
           <Input
@@ -53,8 +102,8 @@ const NoMessageWrapper = styled.div`
 `;
 
 const Wrapper = styled.div`
-  height: 100%;
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
 `;
@@ -64,10 +113,6 @@ const TopBar = styled.div`
   border-bottom: 1px solid hsl(0 0 80%);
   padding: 8px 16px;
   font-size: 1.25rem;
-`;
-
-const MessageArea = styled.div`
-  flex: 1;
 `;
 
 const MessageBox = styled.div`
@@ -96,6 +141,6 @@ const Button = styled.button`
   background-color: white;
   border: none;
   cursor: pointer;
-`
+`;
 
 export default Chat;

@@ -35,6 +35,7 @@ function ChatList({
         }
       );
       const contacts = await response.json();
+      console.log(contacts);
       setContacts(contacts);
     }
     fetchContacts();
