@@ -86,6 +86,14 @@ function SignupForm() {
   );
 }
 
+const Wrapper = styled.div`
+  max-width: 800px;
+  width: 100%;
+  height: 80%;
+  margin: 0 auto;
+  padding: 20px;
+`;
+
 const Form = styled.form`
   min-height: 100%;
   display: grid;
@@ -101,14 +109,10 @@ const InsideWrapper = styled.div`
   border: 1px solid hsl(0 0 80%);
   padding: 48px 64px;
   border-radius: 16px;
-`;
 
-const Wrapper = styled.div`
-  max-width: 800px;
-  width: 100%;
-  height: 80%;
-  margin: 0 auto;
-  padding: 20px;
+  @media (max-width: 480px) {
+    padding: 24px 32px;
+  }
 `;
 
 const InputGroup = styled.div`

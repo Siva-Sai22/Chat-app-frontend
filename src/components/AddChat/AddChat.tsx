@@ -86,6 +86,11 @@ const PlusButton = styled.button`
   position: absolute;
   left: 230px;
   bottom: 25px;
+
+  @media (max-width: 480px) {
+    left: revert;
+    right: 25px;
+  }
 `;
 
 const Content = styled(Dialog.Content)`
@@ -111,6 +116,7 @@ const Title = styled(Dialog.Title)`
 const CloseButton = styled(Dialog.Close)`
   border: none;
   border-radius: 50%;
+  cursor: pointer;
 `;
 
 const Form = styled.form`
@@ -135,7 +141,7 @@ const Input = styled.input`
 
 const Button = styled.button`
   color: white;
-  background-color: hsl(246 50% 65%);
+  background-color: hsl(0 0 25);
   border: none;
   padding: 4px 8px;
   margin-top: 8px;
@@ -144,7 +150,7 @@ const Button = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: hsl(246 50% 60%);
+    background-color: hsl(0 0 20);
   }
 `;
 

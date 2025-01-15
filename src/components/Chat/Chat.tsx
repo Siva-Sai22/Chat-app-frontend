@@ -1,14 +1,20 @@
 "use client";
 import * as React from "react";
 import styled from "styled-components";
-import { Send } from "react-feather";
+import { Send, ChevronLeft } from "react-feather";
 
 import { Contact } from "@/types";
 import useUser from "@/hooks/use-user";
 import MessageArea from "../MessageArea";
 import { Message as MessageType } from "@/types";
 
-function Chat({ selectedChat }: { selectedChat: Contact }) {
+function Chat({
+  setSelectedChat,
+  selectedChat,
+}: {
+  setSelectedChat: React.Dispatch<React.SetStateAction<Contact>>;
+  selectedChat: Contact;
+}) {
   const [messages, setMessages] = React.useState<MessageType[]>([]);
   const [messageContent, setMessageContent] = React.useState("");
   const [socket, setSocket] = React.useState<WebSocket | null>(null);
@@ -68,8 +74,11 @@ function Chat({ selectedChat }: { selectedChat: Contact }) {
   }
 
   return (
-    <Wrapper>
-      <TopBar>{selectedChat.name}</TopBar>
+    <Wrapper selectedChat={selectedChat}>
+      <TopBar>
+        <BackButton onClick={() => setSelectedChat({ email: "", name: "" })} />
+        {selectedChat.name}
+      </TopBar>
       <MessageArea
         selectedChat={selectedChat}
         messages={messages}
@@ -99,13 +108,22 @@ const NoMessageWrapper = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 1.25rem;
+
+  @media (max-width: 480px) {
+    display: none;
+  }
 `;
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ selectedChat: Contact }>`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 480px) {
+    display: ${({ selectedChat }) =>
+      selectedChat.email === "" ? "none" : "flex"};
+  }
 `;
 
 const TopBar = styled.div`
@@ -113,6 +131,17 @@ const TopBar = styled.div`
   border-bottom: 1px solid hsl(0 0 80%);
   padding: 8px 16px;
   font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const BackButton = styled(ChevronLeft)`
+  display: none;
+  cursor: pointer;
+  @media (max-width: 480px) {
+    display: revert;
+  }
 `;
 
 const MessageBox = styled.div`

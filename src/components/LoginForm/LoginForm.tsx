@@ -106,6 +106,10 @@ const InsideWrapper = styled.div`
   padding: 48px 64px;
   padding-bottom: 32px;
   border-radius: 16px;
+
+  @media (max-width: 480px) {
+    padding: 24px 32px;
+  }
 `;
 
 const InputGroup = styled.div`

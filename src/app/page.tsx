@@ -20,8 +20,8 @@ export default function Home() {
 
   return (
     <Wrapper>
-      <ChatList setSelectedChat={setSelectedChat} />
-      <Chat selectedChat={selectedChat} />
+      <ChatList setSelectedChat={setSelectedChat} selectedChat={selectedChat} />
+      <Chat setSelectedChat={setSelectedChat} selectedChat={selectedChat} />
     </Wrapper>
   );
 }
@@ -29,4 +29,8 @@ export default function Home() {
 const Wrapper = styled.div`
   height: 90%;
   display: flex;
+
+  @media (max-width: 480px) {
+    display: revert;
+  }
 `;

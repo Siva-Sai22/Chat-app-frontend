@@ -10,8 +10,10 @@ import useUser from "@/hooks/use-user";
 
 function ChatList({
   setSelectedChat,
+  selectedChat,
 }: {
   setSelectedChat: React.Dispatch<React.SetStateAction<Contact>>;
+  selectedChat: Contact;
 }) {
   const [contacts, setContacts] = React.useState<Contact[]>([]);
   const { authToken } = useUser();
@@ -43,7 +45,7 @@ function ChatList({
   }, [authToken, fetchContacts]);
 
   return (
-    <Container>
+    <Container selectedChat={selectedChat}>
       <SearchBar>
         <Input type="text" />
         <Button>
@@ -63,12 +65,17 @@ function ChatList({
   );
 }
 
-const Container = styled.aside`
+const Container = styled.aside<{ selectedChat: Contact }>`
   max-width: 300px;
   width: 100%;
   height: 100%;
   padding: 8px 0px;
   border-right: 1px solid hsl(0 0 80%);
+
+  @media (max-width: 480px) {
+    max-width: 480px;
+    display: ${({ selectedChat }) => (selectedChat.email === "" ? "revert" : "none")};
+  }
 `;
 
 const SearchBar = styled.div`
