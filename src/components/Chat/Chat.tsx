@@ -25,7 +25,9 @@ function Chat({
       return;
     }
 
-    const newSocket = new WebSocket(`ws://localhost:8080?token=${authToken}`);
+    const newSocket = new WebSocket(
+      `${process.env.NEXT_PUBLIC_WS_ENDPOINT}?token=${authToken}`
+    );
     setSocket(newSocket);
 
     return () => {
