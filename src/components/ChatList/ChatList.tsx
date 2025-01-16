@@ -34,7 +34,6 @@ function ChatList({
       }
     );
     const contacts = await response.json();
-    console.log(contacts);
     setContacts(contacts);
   }, [authToken]);
 
@@ -45,7 +44,7 @@ function ChatList({
   }, [authToken, fetchContacts]);
 
   return (
-    <Container selectedChat={selectedChat}>
+    <Container selectedchat={selectedChat}>
       <SearchBar>
         <Input type="text" />
         <Button>
@@ -65,7 +64,7 @@ function ChatList({
   );
 }
 
-const Container = styled.aside<{ selectedChat: Contact }>`
+const Container = styled.aside<{ selectedchat: Contact }>`
   max-width: 300px;
   width: 100%;
   height: 100%;
@@ -74,7 +73,7 @@ const Container = styled.aside<{ selectedChat: Contact }>`
 
   @media (max-width: 480px) {
     max-width: 480px;
-    display: ${({ selectedChat }) => (selectedChat.email === "" ? "revert" : "none")};
+    display: ${({ selectedchat }) => (selectedchat.email === "" ? "revert" : "none")};
   }
 `;
 

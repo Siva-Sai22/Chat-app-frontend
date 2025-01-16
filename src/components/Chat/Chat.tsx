@@ -76,7 +76,7 @@ function Chat({
   }
 
   return (
-    <Wrapper selectedChat={selectedChat}>
+    <Wrapper selectedchat={selectedChat}>
       <TopBar>
         <BackButton onClick={() => setSelectedChat({ email: "", name: "" })} />
         {selectedChat.name}
@@ -116,15 +116,15 @@ const NoMessageWrapper = styled.div`
   }
 `;
 
-const Wrapper = styled.div<{ selectedChat: Contact }>`
+const Wrapper = styled.div<{ selectedchat: Contact }>`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
 
   @media (max-width: 480px) {
-    display: ${({ selectedChat }) =>
-      selectedChat.email === "" ? "none" : "flex"};
+    display: ${({ selectedchat }) =>
+      selectedchat.email === "" ? "none" : "flex"};
   }
 `;
 
